@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 import { Produto } from '../produto/produto';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 
@@ -32,7 +32,8 @@ export class ListaProdutos {
     }
   ]);
   exibirProduto (nome: string){
-    console.log ('Produto Selecionado: ', nome);
+   // console.log ('Produto Selecionado: ', nome);
+   this.produtoSelecionado.set(nome);
   }
 
 adicionarProduto(){
@@ -49,6 +50,20 @@ valorTotal= computed (() => { return this.produtos().reduce
       {nome: 'Arroz Tio João', preco: 400},
     ]);
   }
+  constructor(){
+    effect(() => {
+      console.log('Lista de Produtos Alterados: ', this.produtos());
+    }); 
+    effect (() =>{
+      console.log ('Valor Total Atualizado: ', this.valorTotal());
+    });
+    effect (() => {
+  if (typeof document !== 'undefined') {
+    document.title = `(${this.totalProdutos()}) Minha Loja`;
+  }
+   });
+  }
+  produtoSelecionado = signal <string | null> (null);
 }
 
 
