@@ -1,10 +1,11 @@
 import { Component, signal, computed, effect } from '@angular/core';
 import { Produto } from '../produto/produto';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
+import { UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto, PrecoFormatadoPipe],
+  imports: [Produto, PrecoFormatadoPipe, UpperCasePipe],
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
@@ -64,6 +65,19 @@ valorTotal= computed (() => { return this.produtos().reduce
    });
   }
   produtoSelecionado = signal <string | null> (null);
+
+  carrinho = signal<{nome: string; preco:number}[]>([]);
+
+  adicionarAocarrinho(produto:{nome: string; preco:number}){
+    this.carrinho.update(listaAtual=>
+    [...listaAtual,produto]);
+
+  }
+
+  quantidadeCarrinho = computed (() => this.carrinho().length);
+  totalCarrinho = computed (() =>{
+    return this.carrinho().reduce((total, item)=> total+item.preco,0)
+  });
 }
 
 
